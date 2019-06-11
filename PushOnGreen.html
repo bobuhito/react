@@ -2,7 +2,7 @@
 <html>
 <body>
 <audio id="myAudio" src="1Hz_600s.mp3" controls>Your browser does not support the HTML5 audio tag.</audio> 
-<p id="out">press on green: </p>
+<h1 id="out">Press on Green</h1>
 <script>
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                   //
@@ -15,10 +15,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 var outEle = document.getElementById("out");
 var downlast = (new Date().getTime());
-document.onkeydown = function () {
-    downlast = (new Date().getTime()) - clocklast; // downlast = (new Date().getTime()) - clocklast - 1; 1 for 1ms mainly for Windows OS to deliver event message (but could be infinite for busy CPU!)
+document.onkeydown = function () { downlast = (new Date().getTime()) - clocklast; // downlast = (new Date().getTime()) - clocklast - 1; 1 for 1ms mainly for Windows OS to deliver event message (but could be infinite for busy CPU!)
     if (document.body.style.backgroundColor == "red"){
-       outEle.innerHTML += "x"+downlast;
+       outEle.innerHTML = "x"+downlast;
        localStorage.setItem("react2 "+clocklast+",x", downlast);
     }
     else {
@@ -27,10 +26,10 @@ document.onkeydown = function () {
     }
 };
 
-document.ontouchstart = function () {
-    downlast = (new Date().getTime()) - clocklast; // downlast = (new Date().getTime()) - clocklast - 1; 1 for 1ms mainly for Windows OS to deliver event message (but could be infinite for busy CPU!)
+
+document.ontouchstart = function () { downlast = (new Date().getTime()) - clocklast; // downlast = (new Date().getTime()) - clocklast - 1; 1 for 1ms mainly for Windows OS to deliver event message (but could be infinite for busy CPU!)
     if (document.body.style.backgroundColor == "red"){
-       outEle.innerHTML += "xt"+downlast;
+       outEle.innerHTML = "xt"+downlast;
        localStorage.setItem("react2 "+clocklast+",xt", downlast);
     }
     else {
@@ -38,22 +37,18 @@ document.ontouchstart = function () {
        localStorage.setItem("react2 "+clocklast+",ot", downlast);
     }
 };
-
-var clocklast_old = (new Date().getTime());
-document.ontouchmove = function () {
-    downlast = (new Date().getTime()) - clocklast; // downlast = (new Date().getTime()) - clocklast - 1; 1 for 1ms mainly for Windows OS to deliver event message (but could be infinite for busy CPU!)
-   if (clocklast_old < clocklast) { clocklast_old = clocklast;
+var clocklast_old = (new Date().getTime());  // used to ignore continuing moves after first move
+document.ontouchmove = function () { downlast = (new Date().getTime()) - clocklast; // downlast = (new Date().getTime()) - clocklast - 1; 1 for 1ms mainly for Windows OS to deliver event message (but could be infinite for busy CPU!)
     if (document.body.style.backgroundColor == "red"){
-       outEle.innerHTML += "xm"+downlast;
+       outEle.innerHTML = "xm"+downlast;
        localStorage.setItem("react2 "+clocklast+",xm", downlast);
     }
-    else {
+    else if (clocklast_old < clocklast) { clocklast_old = clocklast;
        outEle.innerHTML += " m"+downlast;
        localStorage.setItem("react2 "+clocklast+",om", downlast);
     }
-   }
 };
-//touchstart, touchend, touchmove
+
 
 var clocklast = (new Date().getTime());
 setInterval(function() {
