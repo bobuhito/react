@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<body>
+<audio id="myAudio" src="1Hz_600s.mp3" controls>Your browser does not support the HTML5 audio tag.</audio> 
+<h1 id="out">flicker Push on Green</h1>
+<script>
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                   //
+//  INSTRUCTIONS:                                                                                    //
+//    Push quickly once the screen changes to green (ms reaction time is displayed).                 //
+//    Changes only occur at 1s intervals, so the metronome sound can be played for help.             //
+//    More measurement error occurs for busier CPUs, which will also cause text to flicker more.     //
+//    "Intentional slow reaction to unchanged green" clears archive if >3s, shows archive if >1s.    //
+//                                                                                                   //
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+var clocklast = (new Date().getTime());
+setInterval(function() {
+    if (Math.random()<0.5) {document.body.style.backgroundColor = "red";}
+    else if (document.body.style.backgroundColor == "red") {
+       document.body.style.backgroundColor = "green";
+       clocklast = (new Date().getTime());  // clocklast = (new Date().getTime())+7; 7 for 7ms mainly for 60Hz monitor refresh (but could be infinite for busy CPU!)
+    }
+
+    // addition to flash white for a few ms on fast CPU, which is below refresh time and should never show, but flickers on slow/busy CPU
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },47);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },177);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },269);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },397);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },511);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },673);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },801);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },901);
+    setTimeout(function(){
+    setTimeout(function(){setTimeout(function(){
+          document.body.style.color = "#000000";},3);
+          document.body.style.color = "#FFFFFF";},0);
+    document.body.style.color = "#000001";
+    },957);
+
+},1000);
+
+var outEle = document.getElementById("out");
+var downlast = (new Date().getTime());
+
+var clocklast_old = (new Date().getTime());
+document.ontouchmove = function () { downlast = (new Date().getTime()) - clocklast;
+    if (document.body.style.backgroundColor == "red"){
+       outEle.innerHTML = "xm"+downlast;
+       localStorage.setItem("react2 "+clocklast+",xm", downlast);
+    }
+    else if (clocklast_old < clocklast) { clocklast_old = clocklast;  // ignore continuing moves after first move
+       outEle.innerHTML += " m"+downlast;
+       localStorage.setItem("react2 "+clocklast+",om", downlast);
+    }
+};
+document.ontouchstart = function () { downlast = (new Date().getTime()) - clocklast;
+    if (document.body.style.backgroundColor == "red"){
+       outEle.innerHTML = "xt"+downlast;
+       localStorage.setItem("react2 "+clocklast+",xt", downlast);
+    }
+    else if (downlast > 3000) localStorage.clear();
+    else if (downlast > 1000) { outEle.innerHTML = JSON.stringify(localStorage); outEle = null; }
+    else { clocklast_old = clocklast;
+       outEle.innerHTML += " t"+downlast;
+       localStorage.setItem("react2 "+clocklast+",ot", downlast);
+    }
+};
+
+//Chrome does not allow autoplay!
+//var audEle = document.getElementById("myAudio");
+//audEle.play();
+
+</script> 
+</body>
+</html>
