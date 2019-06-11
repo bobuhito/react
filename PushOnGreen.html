@@ -8,9 +8,9 @@
 //                                                                                                   //
 //  INSTRUCTIONS:                                                                                    //
 //    Push quickly once the screen changes to green (ms reaction time is displayed).                 //
-//    Changes only occur at one-second intervals, so the metronome sound can be played for help.     //
+//    Changes only occur at 1s intervals, so the metronome sound can be played for help.             //
 //    More measurement error occurs for busier CPUs, which will also cause text to flicker more.     //
-//    Saved data is in "localStorage" (in developer window) - Delete with "localStorage.clear()".    //
+//    "Intentional slow reaction to unchanged green" clears archive if >3s, shows archive if >1s.    //
 //                                                                                                   //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 var clocklast = (new Date().getTime());
@@ -29,9 +29,8 @@ document.onkeydown = function () { downlast = (new Date().getTime()) - clocklast
        outEle.innerHTML = "x"+downlast;
        localStorage.setItem("react2 "+clocklast+",x", downlast);
     }
-    else if (downlast > 1000) {
-       outEle.innerHTML = JSON.stringify(localStorage);
-    }
+    else if (downlast > 3000) localStorage.clear();
+    else if (downlast > 1000) { outEle.innerHTML = JSON.stringify(localStorage); outEle = null; }
     else {
        outEle.innerHTML += " "+downlast;
        localStorage.setItem("react2 "+clocklast+",o", downlast);
@@ -54,9 +53,8 @@ document.ontouchstart = function () { downlast = (new Date().getTime()) - clockl
        outEle.innerHTML = "xt"+downlast;
        localStorage.setItem("react2 "+clocklast+",xt", downlast);
     }
-    else if (downlast > 1000) {
-       outEle.innerHTML = JSON.stringify(localStorage);
-    }
+    else if (downlast > 3000) localStorage.clear();
+    else if (downlast > 1000) { outEle.innerHTML = JSON.stringify(localStorage); outEle = null; }
     else { clocklast_old = clocklast;
        outEle.innerHTML += " t"+downlast;
        localStorage.setItem("react2 "+clocklast+",ot", downlast);
