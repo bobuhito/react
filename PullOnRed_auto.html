@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<body>
+<audio id="myAudio" src="1Hz_600s.mp3" controls>Your browser does not support the HTML5 audio tag.</audio> 
+<h1 id="out">[auto<6?] Pull on Red</h1>
+<script>
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                   //
+//  INSTRUCTIONS:                                                                                    //
+//    Pull quickly once the screen changes to red (ms reaction time is displayed).                   //
+//    Changes only occur at 1s intervals, so the metronome sound can be played for help.             //
+//    More measurement error occurs for busier CPUs, which will also cause text to flicker more.     //
+//    "Intentional slow reaction to unchanged red" clears archive if >3s, shows archive if >1s.      //
+//                                                                                                   //
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+var clocklast = (new Date().getTime());
+setInterval(function() {
+    if (Math.random()<0.5) {document.body.style.backgroundColor = "green";}
+    else if (document.body.style.backgroundColor == "green") {
+       document.body.style.backgroundColor = "red";
+       clocklast = (new Date().getTime());  // clocklast = (new Date().getTime())+7; 7 for 7ms mainly for 60Hz monitor refresh (but could be infinite for busy CPU!)
+    }
+},1000);
+
+var triggered = 0;
+var downlast_auto = (new Date().getTime());
+setInterval(function() {
+    if (document.body.style.backgroundColor == "red") {
+       if (triggered == 1) { triggered = 0;
+          setTimeout(function() {
+             downlast_auto = (new Date().getTime()) - clocklast - 50;
+             outEle.innerHTML += "-"+downlast_auto;            
+          },50);
+       }
+    }
+    else triggered = 1;
+},3);
+
+
+
+
+
+var outEle = document.getElementById("out");
+var downlast = (new Date().getTime());
+document.onkeyup = function () { downlast = (new Date().getTime()) - clocklast;
+    if (document.body.style.backgroundColor == "green"){
+       outEle.innerHTML = "x"+downlast;
+       localStorage.setItem("react1 "+clocklast+",x", downlast);
+    }
+    else if (downlast > 3000) localStorage.clear();
+    else if (downlast > 1000) { outEle.innerHTML = JSON.stringify(localStorage); outEle = null; }
+    else {
+       outEle.innerHTML += " "+downlast;
+       localStorage.setItem("react1 "+clocklast+",o", downlast);
+    }
+};
+
+var clocklast_old = (new Date().getTime());
+document.ontouchmove = function () { downlast = (new Date().getTime()) - clocklast;
+    if (document.body.style.backgroundColor == "green"){
+       outEle.innerHTML = "xm"+downlast;
+       localStorage.setItem("react1 "+clocklast+",xm", downlast);
+    }
+    else if (clocklast_old < clocklast) { clocklast_old = clocklast;  // ignore continuing moves after first move
+       outEle.innerHTML += " m"+downlast;
+       localStorage.setItem("react1 "+clocklast+",om", downlast);
+    }
+};
+document.ontouchend = function () { downlast = (new Date().getTime()) - clocklast;
+    if (document.body.style.backgroundColor == "green"){
+       outEle.innerHTML = "xt"+downlast;
+       localStorage.setItem("react1 "+clocklast+",xt", downlast);
+    }
+    else if (downlast > 3000) localStorage.clear();
+    else if (downlast > 1000) { outEle.innerHTML = JSON.stringify(localStorage); outEle = null; }
+    else { clocklast_old = clocklast;
+       outEle.innerHTML += " t"+downlast;
+       localStorage.setItem("react1 "+clocklast+",ot", downlast);
+    }
+};
+
+//Chrome does not allow autoplay!
+//var audEle = document.getElementById("myAudio");
+//audEle.play();
+
+</script> 
+</body>
+</html>
